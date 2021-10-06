@@ -1,31 +1,35 @@
-
-import uuid
-from flask import Flask, request, json, Response
+from flask import Flask,render_template
+from flask import url_for
 from flask_sqlalchemy import SQLAlchemy
-
 import config
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
+app.config['SQLALCHEMY_ECHO'] = True
 app.config.from_object(config)
 db = SQLAlchemy(app)
 
 
-class Movie_User(db.Model):
-    id = db.Column(db.Integer,primary_key=True)
-    name = db.Column(db.String(20))
+# @app.route('/')
+# def index():
+#     return render_template('index.html',name = name,movies = movies)
 
-class Movie(db.Model):
-    id = db.Column(db.Integer,primary_key=True)
-    title = db.Column(db.String(60))
-    year = db.Column(db.String(4))
+class User(db.Model): # 表名将会是 user（自动生成，小写处理）
+    id = db.Column(db.Integer, primary_key=True) # 主键
+    name = db.Column(db.String(20)) # 名字
 
-db.drop_all()
-db.create_all() # 在数据库中生成数据表
+class Movie(db.Model):# 表名将会是movie
+    id = db.Column(db.Integer, primary_key=True) # 主键
+    title = db.Column(db.String(60)) # 电影标题
+    year = db.Column(db.String(4)) # 电影年份
 
 @app.route('/')
-def hello_world():
-    return 'Loving this world'
+def index():
+    user = User.query.first() # 读取用户记录
+    movies = Movie.query.all() # 读取所有电影记录
+    return render_template('index.html', user=user, movies=movies)
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(Debug=True)
