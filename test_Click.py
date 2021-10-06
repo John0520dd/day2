@@ -3,17 +3,17 @@
 # @Author : 羊来
 # @File : test_Click.py
 # @Software: PyCharm
-import click
+import config
 from app import app,User,Movie
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-import config
-app = Flask(__name__)
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
-app.config['SQLALCHEMY_ECHO'] = True
-app.config.from_object(config)
-db = SQLAlchemy()
+from app import db
+# app = Flask(__name__)
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+# app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
+# app.config['SQLALCHEMY_ECHO'] = True
+# app.config.from_object(config)
+# db = SQLAlchemy(app)
 
 # db.create_all()  # 全局的两个变量移动到这个函数内
 # name = 'Grey Li'
@@ -36,19 +36,22 @@ db = SQLAlchemy()
 #     except:
 #         print("sth wrong")
 
-# movies = Movie.query.all()
-# for movie in movies:
-#     print(movie.id)
-#     print(movie.title)
-#     try:
-#         if movie.title == "My Neighbor Totoro":
-#             db.session.delete(movie)
-#             print("删除成功")
-#     except:
-#         print("Sth Wrong")
+movies = Movie.query.all()
+for movie in movies:
+    print(movie.id)
+    # print(movie.title)
+    try:
+        if movie.title == "My Neighbor Totoro" :
+            db.session.delete(movie)
+            print("删除成功")
+        else:
+            print("Not Found")
+    except:
+        print("Sth Wrong")
 
-movie = Movie.query.get(4)
-db.session.delete(movie)
+# 这tm还真是这个问题，视图函数混乱，造成了这个问题
+# movie = Movie.query.get(4)
+# db.session.delete(movie)
 db.session.commit()
 # db.session.commit()
 # click.echo('Done.')
