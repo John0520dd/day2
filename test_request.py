@@ -32,4 +32,4 @@ def index():
 
         # user = user.query.first()
         # movies = movie.query.all()
-        # return render_template('index.html', user=user, movies=movies)
+        # return render_template('index1.html', user=user, movies=movies)
