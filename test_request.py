@@ -6,7 +6,7 @@
 from flask import request, url_for, redirect, flash, render_template, Flask
 from flask_sqlalchemy import SQLAlchemy
 
-from app import user,movie
+from app import User,Movie
 import config
 
 

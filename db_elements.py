@@ -3,7 +3,7 @@
 # @Author : 羊来
 # @File : db_elements.py
 # @Software: PyCharm
-from app import user,movie
+from app import User,Movie
 from flask import Flask, request, json, Response
 from flask_sqlalchemy import SQLAlchemy
 import config
