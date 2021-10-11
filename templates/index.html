@@ -1,4 +1,36 @@
+{#{% if current_user.is_authenticated %}#}
+{#    <form method="post">#}
+{#        Name <input type="text" name="title" autocomplete="off" required>#}
+{#        Year <input type="text" name="year" autocomplete="off" required>#}
+{#        <input class="btn" type="submit" name="submit" value="Add">#}
+{#    </form>#}
+{##}
+{#    <a class="btn" href="{{ url_for('edit', movie_id=movie.id)}}">Edit</a>#}
+{#    <form class="inline-form" method="post" action="{{ url_for('.delete', movie_id=movie.id) }}">#}
+{#        <input class="btn" type="submit" name="delete" value="Delete" onclick="return confirm('Are you sure?')">#}
+{#    </form>#}
+{#{% endif %}#}
+
+{% if current_user.is_authenticated %}
+{#    <form method="post">#}
+{#        Name <input type="text" name="title" autocomplete="off" required>#}
+{#        Year <input type="text" name="year" autocomplete="off" required>#}
+{#        <input class="btn" type="submit" name="submit" value="Add">#}
+{#    </form>#}
+
+{% endif %}
+
+
+{% if current_user.is_authenticated %}
+    <li><a href="{{ url_for('settings') }}">Settings</a></li>
+    <li><a href="{{ url_for('logout') }}">Logout</a></li> {% else %}
+    <li><a href="{{ url_for('login') }}">Login</a></li>
+{% endif %}
+
 {% extends 'base.html' %}
+
+
+
 
 {% block content %}<p>{{ movies|length }} Movie</p>
     <ul class="movie-list"> {% for movie in movies %}
@@ -6,11 +38,12 @@
             <span class="float-right">
 {#                <a class="imdb" href="https://www.imdb.com/find?q={{ movie.title }}" target="_blank"#}
 {#                   title="Find this movie on IMDb"> IMDb</a>#}
-                <form class="inline-form" method="post" action="{{ url_for('delete',movie_id=movie.id)}}">
+                <form class="inline-form" method="post" action="{{ url_for('delete',movie_id=movie.id) }}">
                     <a class="btn" href="{{ url_for('edit', movie_id=movie.id) }}">Edit</a>
 
-                    <a class="imdb" href="https://movie.douban.com/subject_search?search_text={{ movie.title }}" target="_blank"
-                   title="Find this movie on 豆瓣"> 豆瓣</a>
+                    <a class="imdb" href="https://movie.douban.com/subject_search?search_text={{ movie.title }}"
+                       target="_blank"
+                       title="Find this movie on 豆瓣"> 豆瓣</a>
 
                     <input class="btn" type="submit" name="delete" value="Delete" onclick="return	confirm('是否删除?')">
                 </form>
@@ -22,8 +55,8 @@
          title="to~to~ro~">
     <p>{{ movies|length }} Titles</p>
     <form method="post">
-{#        名称 <input type="text" name="title" autocomplete="off" required>#}
-{#        年份 <input type="text" name="year" autocomplete="off" required>#}
+        {#        名称 <input type="text" name="title" autocomplete="off" required>#}
+        {#        年份 <input type="text" name="year" autocomplete="off" required>#}
 
 
         名称 <input type="text" name="title" autocomplete="on" required>

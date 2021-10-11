@@ -44,7 +44,8 @@ footer {
 .totoro {
     display: block;
     margin: 0 auto;
-    height: 100px;
+    height: 100%;
+    width: 100%;
 }
 
 nav ul {
@@ -94,10 +95,12 @@ input[type=text] {
     border: 1px solid #ddd;
 }
 
-input[name=year] {
-    width: 50px;
+input[name=year]{
+    width: 40%;
 }
-
+input[name=title] {
+    width: 40%;
+}
 .btn {
     font-size: 12px;
     padding: 3px 5px;

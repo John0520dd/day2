@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash,check_password_hash
 import config
 import click
-from flask_login import LoginManager,UserMixin,login_user,login_required,logout_user
+from flask_login import LoginManager,UserMixin,login_user,login_required,logout_user,current_user
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
@@ -58,12 +58,16 @@ def hello():
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    if request.method == 'POST':
+        if not current_user.is_authenticated:  # 如果当前用户未认证
+            return redirect(url_for('hello')) # 重定向到主页
+
     if request.method == 'POST': # 判断是否是 POST 请求 # 获取表单数据
         title = request.form.get('title') # 传入表单对应输入字段的 name 值
         year = request.form.get('year') # 验证数据
         if not title or not year or len(year) > 4 or len(title) > 60:
             flash('Invalid input.') # 显示错误提示
-            return redirect(url_for('index')) # 重定向回主页
+            return redirect(url_for('hello')) # 重定向回主页
 
         # 保存表单数据到数据库
         movie = Movie(title=title, year=year) # 创建记录
@@ -109,6 +113,7 @@ def delete(movie_id):
 
 
 @app.errorhandler(404) # 传入要处理的错误代码
+@login_required # 用于视图保护，后面会详细介绍
 def page_not_found(e): # 接受异常对象作为参数
     # return render_template('404.html'), 404
     return render_template('404_1.html'), 404
@@ -144,12 +149,14 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        print("username : "+username)
+        print("password : "+password)
         if not username or not password:
             flash('Invalid input.')
             return redirect(url_for('login'))
 
         user = User.query.first() # 验证用户名和密码是否一致
-        if username == user.username and user.validate_password( password):
+        if username == user.username and user.validate_password(password):
             login_user(user) # 登入用户
             flash('Login success.')
             return redirect(url_for('hello')) # 重定向到主页
@@ -165,6 +172,20 @@ def logout():
     logout_user() # 登出用户
     flash('Goodbye.')
     return redirect(url_for('hello')) # 重定向回首页
+
+@app.route('/settings', methods=['GET', 'POST'])
+@login_required
+def settings():
+    if request.method == 'POST':
+        name = request.form['name']
+        if not name or len(name) > 20:
+            flash('Invalid input.')
+            return redirect(url_for('settings'))
+        current_user.name = name # current_user 会返回当前登录用户的数据库记录对象 # 等同于下面的用法 # user = User.query.first() # user.name = name
+        db.session.commit()
+        flash('Settings updated.')
+        return redirect(url_for('hello'))
+    return render_template('settings.html')
 
 if __name__ == '__main__':
     app.run()
